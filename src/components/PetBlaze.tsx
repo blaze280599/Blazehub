@@ -18,7 +18,8 @@ const readPets = () => {
 function usePurr() {
   const ctx = useRef<AudioContext | null>(null);
   const gain = useRef<GainNode | null>(null);
-  const start = () => {
+  // Must be called from a click/tap so the browser lets audio play
+  const unlock = () => {
     if (!ctx.current) {
       const ac = new AudioContext();
       const buffer = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
@@ -46,19 +47,28 @@ function usePurr() {
       gain.current = master;
     }
     void ctx.current.resume();
-    gain.current!.gain.setTargetAtTime(0.9, ctx.current.currentTime, 0.15);
+  };
+  const start = () => {
+    if (ctx.current && gain.current) gain.current.gain.setTargetAtTime(0.9, ctx.current.currentTime, 0.15);
   };
   const stop = () => {
     if (ctx.current && gain.current) gain.current.gain.setTargetAtTime(0, ctx.current.currentTime, 0.25);
   };
-  useEffect(() => () => void ctx.current?.close(), []);
-  return { start, stop };
+  useEffect(
+    () => () => {
+      void ctx.current?.close();
+      ctx.current = null;
+    },
+    [],
+  );
+  return { unlock, start, stop };
 }
 
 type Pop = { id: number; x: number; y: number; kind: 'heart' | 'text'; text?: string; rot: number };
 
 export function PetBlaze() {
-  const [pets, setPets] = useState(0);
+  const [pets, setPets] = useState(readPets);
+  const [sessionPets, setSessionPets] = useState(0);
   const [petting, setPetting] = useState(false);
   const [surprised, setSurprised] = useState(false);
   const [sound, setSound] = useState(false);
@@ -74,7 +84,6 @@ export function PetBlaze() {
   const rotate = useTransform(tiltX, [-1, 1], [-10, 10]);
   const squish = useSpring(1, { stiffness: 300, damping: 10 });
 
-  useEffect(() => setPets(readPets()), []);
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, String(pets));
@@ -97,14 +106,14 @@ export function PetBlaze() {
     tiltX.set((x / r.width - 0.5) * 2);
     tiltY.set((y / r.height - 0.5) * 2);
 
-    const d = Math.hypot(x - last.current.x, y - last.current.y);
+    last.current.dist += Math.hypot(x - last.current.x, y - last.current.y);
     last.current.x = x;
     last.current.y = y;
-    if (e.pointerType === 'mouse' || e.buttons || e.pointerType === 'touch') last.current.dist += d;
 
     if (last.current.dist > 90) {
       last.current.dist = 0;
       setPets((n) => n + 1);
+      setSessionPets((n) => n + 1);
       setPetting(true);
       if (sound) purr.start();
       squish.set(0.94);
@@ -116,6 +125,12 @@ export function PetBlaze() {
         purr.stop();
       }, 700);
     }
+  };
+
+  // Start each stroke from where the pointer enters, so entering doesn't count as a pet
+  const onEnter = (e: PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    last.current = { x: e.clientX - r.left, y: e.clientY - r.top, dist: 0 };
   };
 
   const onLeave = () => {
@@ -139,7 +154,7 @@ export function PetBlaze() {
   };
 
   const mood = surprised ? 'surprised' : petting ? 'blissful' : 'happy';
-  const level = Math.min(100, (pets % 50) * 2);
+  const level = Math.min(100, sessionPets * 2);
 
   return (
     <section id="pet" className="relative overflow-hidden bg-ginger text-cream">
@@ -151,10 +166,12 @@ export function PetBlaze() {
         <div className="grid items-center gap-12 md:grid-cols-[1.2fr_1fr]">
           <div className="relative mx-auto w-full max-w-md">
             <motion.div
+              onPointerEnter={onEnter}
+              onPointerDown={onEnter}
               onPointerMove={onMove}
               onPointerLeave={onLeave}
               onPointerCancel={onLeave}
-              style={{ rotate, scaleY: squish, touchAction: 'none' }}
+              style={{ rotate, scaleY: squish, touchAction: 'pan-y' }}
               className="relative aspect-[10/9] w-full select-none"
               role="img"
               aria-label="Cartoon Blaze. Move the pointer over the face to pet."
@@ -215,6 +232,8 @@ export function PetBlaze() {
               </motion.button>
               <motion.button
                 onClick={() => {
+                  // Browsers (Safari especially) only allow audio to start inside a tap/click
+                  if (!sound) purr.unlock();
                   setSound((s) => !s);
                   purr.stop();
                 }}

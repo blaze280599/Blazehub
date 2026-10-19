@@ -27,10 +27,10 @@ function VelocityRow({ base, className, reverse = false }: { base: number; class
 
   const items = [...MARQUEE, ...MARQUEE];
   return (
-    <div className={`overflow-hidden whitespace-nowrap py-4 ${className}`}>
+    <div aria-hidden className={`overflow-hidden whitespace-nowrap py-4 ${className}`}>
       <motion.div className="flex w-max items-center" style={{ x: tx, skewX: skew }}>
         {[0, 1].map((k) => (
-          <div key={k} className="flex items-center" aria-hidden={k === 1}>
+          <div key={k} className="flex items-center">
             {items.map((w, i) => (
               <span key={i} className="flex items-center gap-6 px-3 font-display text-2xl font-semibold uppercase tracking-wide md:text-4xl">
                 {w}
@@ -47,6 +47,11 @@ function VelocityRow({ base, className, reverse = false }: { base: number; class
 export function Marquee() {
   return (
     <section aria-label="Blaze’s titles" className="relative -mt-px overflow-hidden bg-ginger py-10 md:py-14">
+      <ul className="sr-only">
+        {MARQUEE.map((w) => (
+          <li key={w}>{w}</li>
+        ))}
+      </ul>
       <div className="-rotate-2 scale-105">
         <VelocityRow base={3} className="bg-cocoa text-cream shadow-lg" />
       </div>

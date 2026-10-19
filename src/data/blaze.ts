@@ -11,7 +11,7 @@ export const PROFILE = {
 };
 
 export const INTRO = [
-  'Hello, and welcome to the official fan club of Blaze, one round, orange, extremely fluffy British Shorthair.',
+  'Hello, and welcome to the official fan club of Blaze: a round, orange, extremely fluffy British Shorthair.',
   'Blaze spends the day hunting sunbeams, supervising the gaming setup, peeking out of cat-tree holes and perfecting the art of the loaf. Every photo here was taken by a very proud human.',
 ];
 
@@ -48,7 +48,7 @@ export const DAY: { time: string; title: string; text: string; file: string }[] 
   { time: '07:00', title: 'Breakfast alarm', text: 'Sits. Stares. Repeats until someone opens the food cupboard.', file: 'PXL_20260714_203608292.jpg' },
   { time: '09:00', title: 'Neighbourhood watch', text: 'Logs every bird, van and suspicious leaf from the window.', file: 'PXL_20260708_092347155.jpg' },
   { time: '11:00', title: 'Office hours', text: 'Lies on the desk. Pins your mouse arm. Very productive.', file: 'PXL_20260629_180447283.MP.jpg' },
-  { time: '13:00', title: 'Sunbeam appointment', text: 'Flops into the brightest patch of carpet and rotates hourly.', file: 'PXL_20260407_083815427.MP.jpg' },
+  { time: '13:00', title: 'Sunbeam appointment', text: 'Flops into the brightest patch of carpet and follows it across the floor.', file: 'PXL_20260407_083815427.MP.jpg' },
   { time: '15:00', title: 'Nap with Goose', text: 'The most important meeting of the day. Cannot be moved.', file: 'PXL_20260321_144855610.jpg' },
   { time: '18:00', title: 'Chair takeover', text: 'The gaming chair is free for one second. Not any more.', file: 'PXL_20260315_132556928.MP.jpg' },
   { time: '21:00', title: 'Bedtime inspection', text: 'Checks the duvet for fluffiness and appropriate warmth.', file: 'PXL_20260221_231718680.NIGHT.jpg' },

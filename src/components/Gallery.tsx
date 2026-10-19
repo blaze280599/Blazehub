@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
 import { useLenis } from 'lenis/react';
 import { PHOTOS, TAGS, formatDate, type Photo, type Tag } from '../data/photos';
@@ -60,6 +60,19 @@ function Polaroid({ photo, index, onOpen }: { photo: Photo; index: number; onOpe
 function Lightbox({ list, index, onClose, onNav }: { list: Photo[]; index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
   const photo = list[index];
   const lenis = useLenis();
+  const closeBtn = useRef<HTMLButtonElement>(null);
+
+  // Lock page scroll and move focus into the dialog; give focus back on close
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const overflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    closeBtn.current?.focus({ preventScroll: true });
+    return () => {
+      document.documentElement.style.overflow = overflow;
+      previous?.focus({ preventScroll: true });
+    };
+  }, []);
 
   useEffect(() => {
     lenis?.stop();
@@ -141,6 +154,7 @@ function Lightbox({ list, index, onClose, onNav }: { list: Photo[]; index: numbe
       </motion.div>
 
       <button
+        ref={closeBtn}
         onClick={onClose}
         className="absolute right-4 top-4 z-20 grid size-12 place-items-center rounded-full bg-cream text-2xl font-bold ring-2 ring-cocoa transition hover:rotate-90"
         aria-label="Close"
@@ -165,12 +179,11 @@ export function Gallery() {
         <SectionHeading eyebrow="The gallery" title="A floof in every frame" sub="Tap any photo for the full story. Swipe or use arrow keys to keep going." />
 
         <LayoutGroup>
-          <div className="mb-12 flex flex-wrap justify-center gap-2" role="tablist" aria-label="Filter photos">
+          <div className="mb-12 flex flex-wrap justify-center gap-2" role="group" aria-label="Filter photos">
             {TAGS.map((t) => (
               <button
                 key={t.id}
-                role="tab"
-                aria-selected={tag === t.id}
+                aria-pressed={tag === t.id}
                 onClick={() => setTag(t.id)}
                 className={`relative rounded-full px-4 py-2 text-sm font-bold ring-2 ring-cocoa transition-colors ${tag === t.id ? 'text-white' : 'bg-white hover:bg-peach'}`}
               >

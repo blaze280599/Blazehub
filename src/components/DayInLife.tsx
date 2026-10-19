@@ -40,8 +40,8 @@ export function DayInLife() {
   const bar = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
-    <motion.section id="day" ref={section} style={{ backgroundColor: bg, color: ink, height: `calc(100vh + ${distance}px)` }} className="relative">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+    <motion.section id="day" ref={section} style={{ backgroundColor: bg, color: ink, height: `calc(100svh + ${distance}px)` }} className="relative">
+      <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
         {/* sky */}
         <motion.div aria-hidden className="absolute size-28 rounded-full bg-[#ffd166] shadow-[0_0_80px_30px_rgb(255_209_102_/_0.6)] md:size-36" style={{ top: sunY, left: sunX }} />
         <motion.div aria-hidden className="absolute right-[12%] size-20 rounded-full bg-[#fff3d6] shadow-[0_0_60px_20px_rgb(255_243_214_/_0.35)] md:size-28" style={{ top: moonY }}>
