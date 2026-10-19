@@ -1,0 +1,9 @@
+node_modules
+dist
+.vercel
+*.local
+.DS_Store
+
+# Originals may contain EXIF/GPS; only the stripped copies in public/photos are committed
+Blaze Photos/
+.claude/
