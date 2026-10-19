@@ -1,5 +1,7 @@
 # Blazehub 🐾
 
+https://blazehub-eight.vercel.app/
+
 A cute, whimsical fan site for **Blaze**, an orange British Shorthair.
 
 Built with **React 19 + Vite 8 + TypeScript**, styled with **Tailwind CSS v4**, animated with **Motion** (the successor to Framer Motion), plus **Lenis** smooth scrolling and **canvas-confetti** for treats.
