@@ -1,6 +1,7 @@
 # Blazehub 🐾
 
 https://blazehub-eight.vercel.app/
+<img width="2540" height="1269" alt="image" src="https://github.com/user-attachments/assets/182ee83b-5c47-4b98-8491-dc0230c77ec1" />
 
 A cute, whimsical fan site for **Blaze**, an orange British Shorthair.
 
